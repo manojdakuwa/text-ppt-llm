@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenAI Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #result { margin-top: 20px; color: #333; }
+        /* Custom file input styling */ 
+        .custom-file-label { background-color: #4CAF50; color: white; 
+            padding: 10px 15px; border-radius: 5px; display: inline-block; 
+            cursor: pointer; transition: background-color 0.3s; } 
+        .custom-file-label:hover { background-color: #45a049; } 
+        .custom-file-input { display: none; }
+
+        .custom-file-input:disabled + .custom-file-label  { background-color: #ccc; cursor: not-allowed; opacity: 1;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GenAI Tool</h1>
+        <form id="input-form">
+            <div class="form-group">
+                <label for="text">Text Input:</label>
+                <textarea id="text" name="text" rows="4" placeholder="Enter your text here..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="output-format">Output Format:</label>
+                <select id="output-format" name="output-format" disabled>
+                    <option value="ppt">PowerPoint</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="files" class="custom-file-label">Upload Files</label> 
+                <input type="file" id="files" name="files" class="custom-file-input">
+                <p id="fileName"></p>
+            </div>
+            <button type="submit" id="submit-button" disabled>Submit</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

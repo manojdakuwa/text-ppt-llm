@@ -14,6 +14,17 @@ This project is a generative AI-based tool capable of transforming structured an
   - [Data Processing and Summarization](#data-processing-and-summarization)
   - [Chart Generation](#chart-generation)
   - [PowerPoint Generation](#powerpoint-generation)
+- [Design & Architecture](#design-and-architecture)
+  - [Design & Architecture](#design-and-architecture)
+  - [Model Loading and Caching](#model-loading-and-caching)
+  - [Image Generation](#image-generation)
+  - [PowerPoint Integration](#powerpoint-integration])
+  - [Error Handling](#error-handling)
+- [Key Challenges Faced and How They Were Addressed](#key-challenges-faced-and-how-they-)
+  - [Model Download and Caching](#model-download-and-caching)
+  - [Error Handling](#error-handling)
+  - [Integration with PowerPoint](#integration-with-)
+- [Possible Enhancements for Future Iterations](#possible-enhancements-for-future-iterations)
 - [Next Steps](#next-steps)
 - [License](#license)
 
@@ -115,6 +126,75 @@ Creates charts from numerical data.
 ### PowerPoint Generation
 
 Generates the final PowerPoint presentations.
+
+## Design & Architecture
+
+Design and Architecture
+This project leverages the Hugging Face transformers library and diffusers library for text-to-image generation. The key components include:
+
+### Model Loading and Caching 
+We use the StableDiffusionPipeline from the diffusers library to load and cache the Stable Diffusion model locally. This ensures efficient image generation without the need for repeated downloads.
+
+### Image Generation 
+The pipeline processes a text prompt to generate images, which are then converted to a Base64 string for easy handling.
+
+### PowerPoint Integration 
+Using the python-pptx library, the generated images are inserted into PowerPoint presentations directly from the Base64 string, avoiding the need to save images locally.
+
+### Error Handling 
+Robust error handling ensures that any issues during model loading, image generation, or PowerPoint creation are gracefully managed, with informative logging to aid troubleshooting.
+
+## Key Challenges Faced and How They Were Addressed
+
+### Model Download and Caching
+
+Challenge: Slow download times and large model sizes.
+
+Solution: Implemented local caching using the huggingface_hub library's snapshot functionality. This ensures that models are downloaded once and reused without requiring repeated downloads. In my case it was taking more than 3 hours to download, could be beacuase of internet connectivity issues or other. So if you have very good system, I will suggest yo download locally. else you can create api key and use them in prject but make sure you take care of token. it can cause money.
+
+### Error Handling
+
+Challenge: Handling various exceptions, such as network errors during model download and issues with image generation.
+
+Solution: Added try-except blocks to capture and log errors, ensuring that the application fails gracefully and provides useful information for debugging.
+
+### Integration with PowerPoint
+
+Challenge: Inserting images into PowerPoint without saving them locally.
+
+Solution: Converted generated images to Base64 strings and used python-pptx to insert these images directly into the presentation.
+
+## Possible Enhancements for Future Iterations
+
+1. **Model Optimization**:
+
+Objective: Reduce model size and improve load times.
+
+Approach: Explore quantization techniques and model distillation to create smaller, faster versions of the models. Model Evaulation is important for performance.
+
+Enhanced Error Handling:
+
+2. **Objective**: Improve robustness and user experience.
+
+Approach: Implement more detailed logging and user-friendly error messages. Add retries for network-related errors.
+
+User Interface:
+
+3. **Objective**: Provide a more intuitive and interactive experience.
+
+Approach: Develop a web-based UI using frameworks like Flask or Streamlit to allow users to input text prompts and generate images without writing code.
+
+4. **Additional Model Support**:
+
+Objective: Broaden the range of text-to-image models supported.
+
+5. **Approach**: Integrate additional models from Hugging Face and other repositories, providing users with more options for image generation.
+
+Cloud Integration:
+
+Objective: Leverage cloud resources for large-scale image generation.
+
+6. **Approach**: Implement cloud-based processing using services like AWS or Google Cloud to handle larger workloads and improve performance.
 
 ## Next Steps
 

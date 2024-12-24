@@ -1,46 +1,47 @@
 import datetime
 from pptx import Presentation
 from pptx.util import Inches, Pt
-# from diffusers import StableDiffusionPipeline
-# from transformers import DalleBartProcessor, DalleBartForConditionalGeneration
-import torch
+from diffusers import StableDiffusionPipeline
+from transformers import pipeline
 from PIL import Image
 from io import BytesIO
 import requests
+import base64
+
 
 # Load the pre-trained DALL-E Mini model and processor 
 # model = DalleBartForConditionalGeneration.from_pretrained("flax-community/dalle-mini") 
 # processor = DalleBartProcessor.from_pretrained("flax-community/dalle-mini")
 # cache_dir = 'pytorch/stable_diffusion_model_cache'
 def generate_image(text): 
-    # if torch.cuda.is_available(): 
-    #     device = "cuda" 
-    #     print("CUDA is available. Using GPU.") 
-    # else: 
-    #     device = "cpu" 
-    #     print("CUDA is not available. Using CPU.")
-    # inputs = processor([text], return_tensors="pt") 
-    # outputs = model.generate(**inputs, num_return_sequences=1) 
-    # generated_images = processor.decode(outputs[0], skip_special_tokens=True) 
-    # # Convert the generated image to a PIL image 
-    # image = Image.open(BytesIO(requests.get(generated_images[0]).content))
-    # Craiyon API endpoint 
-    # api_url = "https://api.craiyon.com/generate" # Send the request to the Craiyon API 
-    print("text for generating images: " + text)
-    api_url = "https://bf.dallemini.ai/generate"
-    response = requests.post(api_url, json={"prompt": text}) 
-    response.raise_for_status()
-    # Retrieve the generated image 
-    image_url = response.json()["images"][0] 
-    image_response = requests.get(image_url) 
-    image = Image.open(BytesIO(image_response.content))
-    image_stream = BytesIO() 
-    image.save(image_stream, format='PNG') 
-    image_stream.seek(0)
-    return image_response
+    try:
+        # if torch.cuda.is_available(): 
+        #     device = "cuda" 
+        #     print("CUDA is available. Using GPU.") 
+        # else: 
+        #     device = "cpu" 
+        #     print("CUDA is not available. Using CPU.")
+        # inputs = processor([text], return_tensors="pt") 
+        # outputs = model.generate(**inputs, num_return_sequences=1) 
+        # generated_images = processor.decode(outputs[0], skip_special_tokens=True) 
+        # # Convert the generated image to a PIL image 
+        # image = Image.open(BytesIO(requests.get(generated_images[0]).content))
+        # Load the model 
+        model_id = "CompVis/stable-diffusion-v1-4" 
+        pipeline = StableDiffusionPipeline.from_pretrained(model_id)
+        image = pipeline(prompt=text, num_inference_steps=50).images[0]
+        print("image: ", image)
+        image_stream = BytesIO() 
+        image.save(image_stream, format='PNG') 
+        image_stream.seek(0)
+        img_base64 = base64.b64encode(image_stream.getvalue()).decode('utf-8')
+        return img_base64
+    except Exception as e:
+        print("Error generating image", str(e))
+        return None
 
 def create_ppt(slides_data, file_name='output_presentation.pptx'):
-    print("slides_data: ", slides_data)
+    # print("slides_data: ", slides_data)
     prs = Presentation()
     try:
         for slide_content in slides_data:
@@ -53,9 +54,11 @@ def create_ppt(slides_data, file_name='output_presentation.pptx'):
             content.text = slide_content['text']
             for paragraph in content.text_frame.paragraphs: 
                 paragraph.font.size = Pt(14)
-            # image = generate_image(slide_content['title'])  # Replace with paid actual image generation function if needed
-
-            # slide.shapes.add_picture("",Inches(1), Inches(2), width=Inches(6))
+            image = generate_image(slide_content['title'])  # Replace with paid actual image generation function if needed
+            # Decode base64 image to BytesIO object 
+            img_data = base64.b64decode(image) 
+            img_bytes_io = BytesIO(img_data)
+            slide.shapes.add_picture(img_bytes_io,Inches(1), Inches(2), width=Inches(2))
 
         file_name = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_presentation.pptx")
         prs.save(file_name)

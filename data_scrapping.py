@@ -41,7 +41,7 @@ summarizer = pipeline("summarization", model=model, tokenizer=tokenizer, framewo
 
 # Function to generate titles and summaries using transformers library 
 
-def generate_title(text, top_n=5):
+def generate_title(text, top_n=5): # you can also use open ai for better result and better performance commented one above
     try:
         vectorizer = TfidfVectorizer(stop_words='english')
         X = vectorizer.fit_transform([text])
@@ -121,6 +121,6 @@ def url_scrapping_query(url=None, text=None):
             return []
 
 # # Example usage
-# url = 'https://medium.com/inside-machine-learning/what-is-a-transformer-d07dd1fbec04'  # Replace with your URL
+# url = ''  # Replace with your URL
 # result = main(url)
 # print(result)

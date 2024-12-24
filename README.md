@@ -24,6 +24,7 @@ gen_ai_tool/
 ├── chart_generation.py 
 ├── data_ingestion.py 
 ├── data_processing.py 
+├── data_scrapping.py 
 ├── main.py 
 ├── ppt_generation.py 
 └── requirements.txt 
@@ -35,14 +36,29 @@ gen_ai_tool/
 
 ## Requirements
 
-- Python 3.7+
-- FastAPI
-- Uvicorn
 - pandas
 - matplotlib
 - python-pptx
-- transformers
+- transformers 
 - requests
+- uvicorn
+- FastAPI
+- tensorflow
+- python-multipart
+- sentencepiece
+- bs4
+- textblob
+- langchain
+- langchain_community
+- langchain_text_splitters
+- diffusers
+- accelerate
+- scikit-learn
+- tf-keras
+- numpy
+- dalle-mini
+- pillow
+
 
 ## Installation
 
@@ -59,10 +75,11 @@ gen_ai_tool/
 
 ## Usage
 
-1. Start the FastAPI server:
+1. a. Start the FastAPI server:
     ```bash
     uvicorn app:app --reload
     ```
+   b. Start the frontend running locally
 
 2. Use a tool like Postman or Curl to send a POST request to `http://127.0.0.1:8000/process` with your files and/or text.
 
